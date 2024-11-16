@@ -23,7 +23,8 @@ const app = express();
 
 const corsOptions = {
   credentials: true,
-  origin: "http://localhost:3000",
+  origin: ["https://client-rho-dusky-52.vercel.app/"],
+  methods:["GET","POST","PUT","DELETE"],
   optionsSuccessStatus: 200,
 };
 
