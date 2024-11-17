@@ -11,7 +11,7 @@ const fs = require("fs");
 
 dotenv.config({ path: "config.env" });
 const salt = bcrypt.genSaltSync(10);
-const secret = process.env.SECRET;
+const secret = "powieuvmqpieucvmiuwteqwoicmqroim";
 
 const multer = require("multer");
 const uploadMiddlewar = multer({ dest: "uploads/" });
@@ -55,6 +55,9 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
   const userDoc = await User.findOne({ username });
+  if(!userDoc){
+    res.status(400).json({msg:"invalid username or password"})
+  }
   const passOk = bcrypt.compareSync(password, userDoc.password);
   if (passOk) {
     jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
