@@ -89,12 +89,18 @@ app.post("/post", uploadMiddlewar.single("file"), async (req, res) => {
   const { originalname, path } = req.file;
   const parts = originalname.split(".");
   const ext = parts[parts.length - 1];
-  const newPath = path + "." + ext;
+  const newPath = `${path}.${ext}`;
   fs.renameSync(path, newPath);
 
-  const { token } = req.cookies;
+  const authHeader = req.headers.authorization
+  if(!authHeader){
+    return res.status(400).json({msg:'no token provided'})
+  }
+  const { token } = authHeader.split(' ')[1];
   jwt.verify(token, secret, {}, async (err, info) => {
-    if (err) throw err;
+    if (err) {
+      return res.status(403).json({msg:'invalid token '})
+    }
 
     const { title, summary, content } = req.body;
     const postDoc = await Post.create({
