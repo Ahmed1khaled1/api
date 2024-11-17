@@ -13,7 +13,6 @@ dotenv.config({ path: "config.env" });
 const salt = bcrypt.genSaltSync(10);
 const secret = process.env.SECRET;
 
-
 const multer = require("multer");
 const uploadMiddlewar = multer({ dest: "uploads/" });
 
@@ -24,17 +23,19 @@ const app = express();
 const corsOptions = {
   credentials: true,
   origin: ["https://client-rho-dusky-52.vercel.app/"],
-  methods:["GET","POST","PUT","DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
   optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
-app.use('/uploads',express.static(__dirname +'/uploads'))
+app.use("/uploads", express.static(__dirname + "/uploads"));
 
-const url = process.env.URL;
-mongoose.connect(url);
+
+mongoose.connect(
+  "mongodb+srv://ahmedkhaledg49:node-js-123@learn-mongo-db.jvk8d.mongodb.net/mern?retryWrites=true&w=majority&appName=learn-mongo-db"
+);
 
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
@@ -69,7 +70,7 @@ app.post("/login", async (req, res) => {
 
 app.get("/profile", (req, res) => {
   const { token } = req.cookies;
-  
+
   jwt.verify(token, secret, {}, (err, info) => {
     if (err) throw err;
     res.json(info);
@@ -88,34 +89,36 @@ app.post("/post", uploadMiddlewar.single("file"), async (req, res) => {
   fs.renameSync(path, newPath);
 
   const { token } = req.cookies;
-  jwt.verify(token, secret, {},async (err, info) => {
+  jwt.verify(token, secret, {}, async (err, info) => {
     if (err) throw err;
 
     const { title, summary, content } = req.body;
     const postDoc = await Post.create({
-    title,
-    summary,
-    content,
-    cover: newPath,
-    author:info.id,
-  });
+      title,
+      summary,
+      content,
+      cover: newPath,
+      author: info.id,
+    });
     res.json(postDoc);
-  })
+  });
 });
 
-app.get("/post",async(req,res)=>{
-  const posts = await Post.find().populate("author", ["username"]).sort({createdAt:-1}).limit(20);
+app.get("/post", async (req, res) => {
+  const posts = await Post.find()
+    .populate("author", ["username"])
+    .sort({ createdAt: -1 })
+    .limit(20);
   res.json(posts);
-})
+});
 
-app.get('/post/:id',async(req,res)=>{
-  const {id}=req.params
+app.get("/post/:id", async (req, res) => {
+  const { id } = req.params;
   const postDoc = await Post.findById(id).populate("author", ["username"]);
   res.json(postDoc);
-})
+});
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`listening from port ${PORT}`);
 });
-
