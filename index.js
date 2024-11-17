@@ -20,14 +20,13 @@ dotenv.config({ path: "config.env" });
 
 const app = express();
 
-const corsOptions = {
-  credentials: true,
-  origin: ["https://client-rho-dusky-52.vercel.app/"],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  optionsSuccessStatus: 200,
-};
-
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: ["https://client-rho-dusky-52.vercel.app/"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
