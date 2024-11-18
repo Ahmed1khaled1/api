@@ -34,9 +34,7 @@ app.use(cors({
 
 app.options("https://client-rho-dusky-52.vercel.app/", cors()); // Handle preflight requests
 
-mongoose.connect(
-  "mongodb+srv://ahmedkhaledg49:node-js-123@learn-mongo-db.jvk8d.mongodb.net/mern?retryWrites=true&w=majority&appName=learn-mongo-db"
-);
+mongoose.connect(URI);
 
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
