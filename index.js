@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-
+const dotenv = require("dotenv");
 const { default: mongoose } = require("mongoose");
 const User = require("./models/user");
 const Post = require("./models/post");
@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const fs = require("fs");
 
+dotenv.config({ path: "config.env" });
 const salt = bcrypt.genSaltSync(10);
 const secret = "powieuvmqpieucvmiuwteqwoicmqroim";
 
@@ -23,8 +24,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
 
-app.use(
-  cors({
+app.use(cors({
     origin: ["https://client-rho-dusky-52.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -55,8 +55,8 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
   const userDoc = await User.findOne({ username });
-  if (!userDoc) {
-    res.status(400).json({ msg: "invalid username or password" });
+  if(!userDoc){
+    res.status(400).json({msg:"invalid username or password"})
   }
   const passOk = bcrypt.compareSync(password, userDoc.password);
   if (passOk) {
@@ -93,7 +93,7 @@ app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
     const newPath = `${path}.${ext}`;
     fs.renameSync(path, newPath);
 
-    const { token } = req.cookies;
+    const token = req.cookies.token;
     jwt.verify(token, secret, {}, async (err, info) => {
       if (err) {
         return res.status(500).json({ msg: "invalid token", error: err });
@@ -113,6 +113,7 @@ app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
   }
 });
 
+
 app.get("/post", async (req, res) => {
   const posts = await Post.find()
     .populate("author", ["username"])
@@ -127,7 +128,7 @@ app.get("/post/:id", async (req, res) => {
   res.json(postDoc);
 });
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`listening from port ${PORT}`);
 });
