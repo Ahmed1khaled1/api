@@ -90,15 +90,15 @@ app.post("/post", uploadMiddlewar.single("file"), async (req, res) => {
   const newPath = `${path}.${ext}`;
   fs.renameSync(path, newPath);
 
-  const authHeader = req.headers.authorization
-  if(!authHeader){
-    return res.status(400).json({msg:'no token provided'})
-  }
-  const { token } = authHeader.split(' ')[1];
-  jwt.verify(token, secret, {}, async (err, info) => {
-    if (err) {
-      return res.status(403).json({msg:'invalid token '})
-    }
+  // const authHeader = req.headers.authorization
+  // if(!authHeader){
+  //   return res.status(400).json({msg:'no token provided'})
+  // }
+  // const { token } = authHeader.split(' ')[1];
+  // jwt.verify(token, secret, {}, async (err, info) => {
+  //   if (err) {
+  //     return res.status(403).json({msg:'invalid token '})
+  //   }
 
     const { title, summary, content } = req.body;
     const postDoc = await Post.create({
@@ -110,7 +110,7 @@ app.post("/post", uploadMiddlewar.single("file"), async (req, res) => {
     });
     res.json(postDoc);
   });
-});
+
 
 app.get("/post", async (req, res) => {
   const posts = await Post.find()
