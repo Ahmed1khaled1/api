@@ -14,7 +14,7 @@ const salt = bcrypt.genSaltSync(10);
 const secret = "powieuvmqpieucvmiuwteqwoicmqroim";
 
 const multer = require("multer");
-const uploadMiddleware = multer({ dest: "uploads/" });
+const uploadMiddleware = multer({ dest: "/uploads" });
 
 dotenv.config({ path: "config.env" });
 
@@ -98,7 +98,6 @@ app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
       if (err) {
         return res.status(500).json({ msg: "invalid token", error: err });
       }
-      console.log("Token verified:", info);
       const { title, summary, content } = req.body;
       const postDoc = await Post.create({
         title,
