@@ -14,7 +14,7 @@ const salt = bcrypt.genSaltSync(10);
 const secret = "powieuvmqpieucvmiuwteqwoicmqroim";
 
 const multer = require("multer");
-const uploadMiddleware = multer({ dest: "/uploads" });
+const uploadMiddleware = multer({ dest: "uploads" });
 
 dotenv.config({ path: "config.env" });
 
