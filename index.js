@@ -9,9 +9,9 @@ const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const fs = require("fs");
 
+
 dotenv.config({ path: "config.env" });
 const salt = bcrypt.genSaltSync(10);
-const secret = "powieuvmqpieucvmiuwteqwoicmqroim";
 
 const multer = require("multer");
 const uploadMiddlewar = multer({ dest: "uploads/" });
