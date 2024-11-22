@@ -24,15 +24,19 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
 
-app.use(cors({
-    origin: ["https://client-rho-dusky-52.vercel.app"],
+app.use(
+  cors({
+    origin:true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
 
-app.options("https://client-rho-dusky-52.vercel.app/", cors()); // Handle preflight requests
+app.options(
+  "https://client-rho-dusky-52.vercel.app" ,
+  cors()
+); // Handle preflight requests
 
 mongoose.connect(
   "mongodb+srv://ahmedkhaledg49:node-js-123@learn-mongo-db.jvk8d.mongodb.net/mern?retryWrites=true&w=majority&appName=learn-mongo-db"
